@@ -1,0 +1,29 @@
+{
+    "apiBaseURL":"http://localhost:8000/api/sistemaSolit/",
+    "endpoints":{
+        "usuarios":{
+            "get":"almacenUsuarios/",
+            "post":"almacenUsuarios/",
+            "put":"almacenUsuarios/{id}",
+            "delete":"almacenUsuarios/{id}"
+        },
+        "productos":{
+            "get":"almacenProdcutos/",
+            "post":"almacenProdcutos/",
+            "put":"almacenProdcutos/{id}",
+            "delete":"almacenProdcutos/{id}"
+        },
+        "productos_individuales":{
+            "get":"almacenProductos_indiviaduales/",
+            "post":"almacenProductos_indiviaduales/",
+            "put":"almacenProductos_indiviaduales//{id}",
+            "delete":"almacenProductos_indiviaduales/{id}"
+        },
+        "merma":{
+            "get":"almacenMerma/",
+            "post":"almacenMerma/",
+            "put":"almacenMerma/{id}",
+            "delete":"almacenMerma/{id}"
+        }
+    }
+}

@@ -2,15 +2,19 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-
+import { NextUIProvider, User, } from '@nextui-org/react'
+import Table from './components/Table'
+import  Modal  from './components/Modal'
+import Tab from './components/Tab'
+import Users from './views/Users'
+import Sidebar from './global/Sidebar'
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  )
+  return (  
+    <NextUIProvider>
+    <Users />
+  </NextUIProvider>
+   )
 }
 
 export default App
