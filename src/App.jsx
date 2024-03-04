@@ -6,14 +6,15 @@ import { NextUIProvider, User, } from '@nextui-org/react'
 import Table from './components/Table'
 import  Modal  from './components/Modal'
 import Tab from './components/Tab'
-import Users from './views/Users'
+import Users from './views/almacen/Users'
 import Sidebar from './global/Sidebar'
+import ProductsTab from './views/productos/ProductsTab'
 function App() {
 
   return (  
-    <NextUIProvider>
-    <Users />
-  </NextUIProvider>
+   
+    <Sidebar Content={ProductsTab} />
+  
    )
 }
 

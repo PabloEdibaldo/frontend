@@ -12,26 +12,18 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Chip,
-  User,
+  Tooltip,
   Pagination,
 } from "@nextui-org/react";
-import {PlusIcon} from "./PlusIcon";
 
-import {SearchIcon} from "./SearchIcon";
-import {ChevronDownIcon} from "./ChevronDownIcon";
-
+import {SearchIcon} from "./icons/SearchIcon";
+import {ChevronDownIcon} from "./icons/ChevronDownIcon";
+import {DeleteIcon} from "./icons/DeleteIcon"
+import {EditIcon} from './icons/EditIcon'
 import {capitalize} from "../../utils/utilsTable";
 
-const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
 
-
-
-export default function Index({columns, users, statusOptions,initialVisibleColumns,filterData }) {
+export default function Index({columns, users, statusOptions,initialVisibleColumns,filterField,buttonAct }) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(initialVisibleColumns));
@@ -58,8 +50,7 @@ export default function Index({columns, users, statusOptions,initialVisibleColum
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.nombre_completo.toLowerCase().includes(filterValue.toLowerCase()),
-      );
+        user[filterField].toLowerCase().includes(filterValue.toLowerCase()),);
     }
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -67,6 +58,7 @@ export default function Index({columns, users, statusOptions,initialVisibleColum
         Array.from(statusFilter).includes(user.column),
       );
     }
+  
 
     return filteredUsers;
   }, [users, filterValue, statusFilter]);
@@ -159,9 +151,11 @@ export default function Index({columns, users, statusOptions,initialVisibleColum
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />}>
-              Add New
-            </Button>
+            <>
+           {buttonAct}
+            
+            </>
+            
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -219,6 +213,18 @@ export default function Index({columns, users, statusOptions,initialVisibleColum
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
+  const handleDelete = (itemId) => {
+    // Lógica para eliminar el elemento con el ID especificado
+    // Puedes usar el estado para actualizar la lista de elementos
+    console.log(`Eliminar elemento con ID: ${itemId}`);
+  };
+  
+  const handleEdit = (itemId) => {
+    // Lógica para editar el elemento con el ID especificado
+    // Puedes abrir un modal o redirigir a otra página de edición
+    console.log(`Editar elemento con ID: ${itemId}`);
+  };
+
   return (
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
@@ -248,104 +254,47 @@ export default function Index({columns, users, statusOptions,initialVisibleColum
         )}
       </TableHeader>
       <TableBody items={items}>
-        {(item) => (
-          <TableRow key={item.name}>
-            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
+  {(item) => (
+    <TableRow key={item.id}>
+      {(columnKey) => (
+        <TableCell>
+          {getKeyValue(item, columnKey)}
+          {columnKey === 'actions' && (
+            <>
+             <div className="relative flex items-center gap-2">
+             <Tooltip content="Edit user">
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <Button 
+              onClick={() => handleEdit(item.id)} 
+              isIconOnly
+              >  <EditIcon />
+              </Button>
+              
+              </span>
+            </Tooltip>
+
+            <Tooltip color="danger" content="Delete user">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              <Button 
+              onClick={() => handleDelete(item.id)} 
+              color="danger"
+              isIconOnly
+              >
+                <DeleteIcon />
+                </Button>
+              </span>
+            </Tooltip>
+
+
+             </div>
+
+            </>
+          )}
+        </TableCell>
+      )}
+    </TableRow>
+  )}
+</TableBody>
     </Table>
   );
 }
-
-/*
-import React from "react";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Pagination,
-} from "@nextui-org/react";
-
-export default function index({ row, columns }) {
-  const getKeyValue = (obj, key) => obj[key];
-  const [page, setPage] = React.useState(1);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const pages = Math.ceil(row.length / rowsPerPage);
-
-  const items = React.useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return row.slice(start, end);
-  }, [page, row]);
-
-
-  const onRowsPerPageChange = React.useCallback((e) => {
-    setRowsPerPage(Number(e.target.value));
-    setPage(1);
-  }, []);
-
-
-
-  return (
-    <>
-     <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {row.length} users</span>
-          <label className="flex items-center text-default-400 text-small">
-            Rows per page:
-            <select
-              className="bg-transparent outline-none text-default-400 text-small"
-              onChange={onRowsPerPageChange}
-            >
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="15">15</option>
-            </select>
-          </label>
-        </div>
-      <Table
-        aria-label="Example table with dynamic content"
-        bottomContent={
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="secondary"
-              page={page}
-              total={pages}
-              onChange={(page)=> setPage(page)}
-            />
-          </div>
-        }
-        classNames={{
-          wrapper: "min-h-[222px]",
-        }}
-
-      >
-        <TableHeader>
-          {columns.map((column) => (
-            <TableColumn key={column}>{column}</TableColumn>
-          ))}
-        </TableHeader>
-       
-        <TableBody items={items}>
-        {(item) => (
-          <TableRow key={item.name}>
-            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-      </Table>
-
-     
-    </>
-  );
-}
-
-*/

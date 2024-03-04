@@ -18,7 +18,13 @@ export default function useApiRequest(url,method,body,id) {
         if (method === "GET") {
           response = await fetch(url); // Función de React para hacer las peticiones a la API
         } else if (method === "POST") {
-          response = await fetch(url, {method: method,body: JSON.stringify(body) });
+          response = await fetch(url, 
+            {method: method,
+              body: JSON.stringify(body),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+             }); 
         } else if (method === "DELETE") {
           response = await fetch(`${url}/${id}`, { method: "DELETE" });
         } else if (method === 'PUT'){
